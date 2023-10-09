@@ -5,7 +5,7 @@ stages:
         steps:
           - script: >-
               echo '##vso[task.setvariable
-              variable=skipsubsequent;isOutput=true]false'
+              variable=skipsubsequent;isOutput=false]false'
             name: printvar
       
       - job: B
