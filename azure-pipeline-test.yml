@@ -1,5 +1,5 @@
 stages:
-  - stage: checking the Job
+  - stage: checking_Job
     jobs:
       - job: A
         steps:
