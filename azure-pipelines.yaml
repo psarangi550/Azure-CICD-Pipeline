@@ -1,0 +1,61 @@
+
+trigger: # defining the trigger list in here
+    - main
+
+pool: #definning the pool dictionary which can containe the `Build Agent Name` or `vmImage` or both
+  vmImage : ubuntu-latest # defining the VM on which we want too run the pipeline on which our build agent will work
+
+stages: # defining all the steges with the stage name which can consist of multiple jobs
+- stage: BuildApp
+  displayName:  Build Apps
+  jobs:  # here the job inside jobs/stage can run in parallel
+  - job: BuildFrontendApp
+    displayName: Building FrontEnd App
+    steps:    # defining the steps which consist of multiple  taks/scripts
+      - script: echo Building the Frontend App 
+        displayName: Build FrontEnd App
+      - script: echo Unit Test for Frontend App
+        displayName: Unit Test for Frontend App
+
+  - job: BuildBackendApp
+    displayName: Building Backend App
+    steps:    # defining the steps which consist of multiple  taks/scripts
+      - script: echo Building the Backend App 
+        displayName: Build Backend App
+      - script: echo Unit Test for Backend App
+        displayName: Unit Test for Backend App
+
+- stage: DeployDev
+  displayName: Deploy to Dev Environment
+  jobs:   # here the job inside jobs/stage can run in parallel
+  - job: DeployFrontendApptotheDevEnv
+    displayName: Deploying FrontEnd App to the Dev Env
+    steps:    # defining the steps which consist of multiple  taks/scripts
+      - script: echo Deploying the Frontend App to Dev Env
+        displayName: Deploying the Frontend App to Dev Env
+  
+  - job: DeployBackendApptotheDevEnv
+    displayName: Deploying Backend App to the Dev Env
+    steps:    # defining the steps which consist of multiple  taks/scripts
+      - script: echo Deploying the Backend App to Dev Env
+        displayName: Deploying the Backend App to Dev Env
+
+- stage: DeployProd
+  displayName: Deploy to the Prod Environment
+  pool: # here can define the pool over her where the jobs and their step will run
+    vmImage: 'macOS-10.14'
+  jobs:   # here the job inside jobs/stage can run in parallel
+  - job: DeployFrontendApptotheProdEnv
+    displayName: Deploying FrontEnd App to the Prod Env
+    steps:    # defining the steps which consist of multiple  taks/scripts
+      - script: echo Deploying the Frontend App to Prod Env
+        displayName: Deploying the Frontend App to Prod Env
+      
+  
+  - job: DeployBackendApptotheProdEnv
+    displayName: Deploying Backend App to the Prod Env
+    pool:   # inside the jobs also we can define the pool image as well where all the tasks as a part of it will run
+      vmImage: 'vs2017-win2016'  
+    steps:    # defining the steps which consist of multiple  taks/scripts
+      - script: echo Deploying the Backend App to Prod Env
+        displayName: Deploying the Backend App to Prod Env
