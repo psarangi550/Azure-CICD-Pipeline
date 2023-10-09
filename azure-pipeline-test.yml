@@ -1,0 +1,13 @@
+jobs:
+- job: A
+    steps:
+    - script: "echo '##vso[task.setvariable variable=skipsubsequent;isOutput=true]false'" 
+      # setting up the value for the  skipsubsequent variable with isOutput option as true
+    name: printvar  # setting the job name with which we can capture the value
+
+- job: B
+    condition: and(succeeded(), ne(dependencies.A.outputs['printvar.skipsubsequent'], 'true'))
+    # providing the condition in here stating that the job will only run if printvar.skipsubsequent != true
+    dependsOn: A  # defining the variable using the dependOn out in here 
+    steps:
+    - script: echo hello from B
