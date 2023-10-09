@@ -43,7 +43,7 @@ stages: # defining all the steges with the stage name which can consist of multi
 - stage: DeployProd
   displayName: Deploy to the Prod Environment
   pool: # here can define the pool over her where the jobs and their step will run
-    vmImage: 'macOS-10.14'
+    vmImage: 'vs2017-win2016'
   jobs:   # here the job inside jobs/stage can run in parallel
   - job: DeployFrontendApptotheProdEnv
     displayName: Deploying FrontEnd App to the Prod Env
