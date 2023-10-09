@@ -651,4 +651,136 @@
             - script: echo this only runs for master
       
       ``` 
- 
+
+    - `You can specify that a job run based on the value of an output variable set in a previous job`
+    
+    - In this case, you can only use variables set in directly dependent jobs: which is using the `dependsOn` parameter
+    
+    - we can define the Jobs as below 
+
+        ```yaml
+             
+        jobs:
+        - job: A
+            steps:
+            - script: "echo '##vso[task.setvariable variable=skipsubsequent;isOutput=true]false'" 
+              # setting up the value for the  skipsubsequent variable with isOutput option as true
+            name: printvar  # setting the job name with which we can capture the value
+
+        - job: B
+            condition: and(succeeded(), ne(dependencies.A.outputs['printvar.skipsubsequent'], 'true'))
+            # providing the condition in here stating that the job will only run if printvar.skipsubsequent != true
+            dependsOn: A  # defining the variable using the dependOn out in here 
+            steps:
+            - script: echo hello from B
+                    
+        
+        ```
+
+- **Timeouts**
+  
+  - `To avoid taking up resources when your job is unresponsive or waiting too long`
+  
+  - it's a good idea to set a limit on how long your job is allowed to run
+  
+  - Use the job timeout setting to specify the limit in minutes for running the job  
+  
+  - Setting the value to zero means that the job can run:
+  
+    - Forever on self-hosted agents
+    
+    - For 360 minutes (6 hours) on Microsoft-hosted agents with a public project and public repository
+    
+    - For 60 minutes on Microsoft-hosted agents with a private project or private repository (unless additional capacity is paid for)     
+
+  - The `timeoutInMinutes` `allows` a `limit to be set for the job execution time`. 
+  
+  - `When not specified, the default is 60 minutes. When 0 is specified`, `the maximum limit is used (described above)`.
+  
+  - The `cancelTimeoutInMinutes` `allows a limit to be set for the job cancel time` when the `deployment task is set to keep running if a previous task has failed`. 
+  
+  - `When not specified, the default is 5 minutes. The value should be in range from 1 to 35790 minutes.`
+
+  - we can define the pipeline as below 
+
+    ```yaml
+        
+        jobs:
+        - job: Test
+        timeoutInMinutes: 10 # how long to run the job before automatically cancelling
+        cancelTimeoutInMinutes: 2 # how much time to give 'run always even if cancelled tasks' before stopping them
+
+    ```
+
+- **Multi-job configuration**
+
+    - The `matrix strategy` `enables` `a job to be dispatched multiple times` with different variable sets
+    
+    - The `maxParallel` `tag` `restricts the amount of parallelism`  
+    
+    - The `following job will be dispatched three times with the values of Location and Browser set as specified`. 
+    
+    - However, only two jobs will run at the same time as `maxParallel` value is of `2`
+    
+    - we can define the pipeline as below
+
+        ```yaml
+            
+            jobs:
+            - job: Test
+                strategy:
+                maxParallel: 2
+                matrix: 
+                    US_IE:
+                    Location: US
+                    Browser: IE
+                    US_Chrome:
+                    Location: US
+                    Browser: Chrome
+                    Europe_Chrome:
+                    Location: Europe
+                    Browser: Chrome
+        
+        ```
+
+    - `It's also possible to use output variables to generate a matrix`. 
+    
+    - `This can be handy if you need to generate the matrix using a script`.
+    
+    - we can define the `azure-pipelines.yml` as below 
+
+        ```yaml
+            jobs:
+            - job: generator
+                steps:
+                - bash: echo "##vso[task.setVariable variable=legs;isOutput=true]{'a':{'myvar':'A'}, 'b':{'myvar':'B'}}"
+                name: mtrx
+                # This expands to the matrix
+                #   a:
+                #     myvar: A
+                #   b:
+                #     myvar: B
+            - job: runner
+                dependsOn: generator
+                strategy:
+                matrix: $[ dependencies.generator.outputs['mtrx.legs'] ]
+                steps:
+                - script: echo $(myvar) # echos A or B depending on which leg is running
+                    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        ```
+

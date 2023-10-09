@@ -1,0 +1,24 @@
+
+stages:
+  
+  - stage: Check_Stage
+    
+    jobs:
+    - job: generator
+        steps:
+        - bash: echo "##vso[task.setVariable variable=legs;isOutput=true]{'a':{'myvar':'A'}, 'b':{'myvar':'B'}}"
+        name: mtrx
+        # This expands to the matrix
+        #   a:
+        #     myvar: A
+        #   b:
+        #     myvar: B
+    - job: runner
+        dependsOn: generator
+        strategy:
+        matrix: $[ dependencies.generator.outputs['mtrx.legs'] ]  # here we are fetching the matrix value from the preveious pipeline run 
+        steps:
+        - script: echo $(myvar) # echos A or B depending on which leg is running
+
+
+
