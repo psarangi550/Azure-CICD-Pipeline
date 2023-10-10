@@ -57,5 +57,7 @@ stages:
         containerAppName: $(CONTAINERAPPS_APP)
         containerAppEnvironment: $(CONTAINERAPPS_ENVIRONMENT)
         resourceGroup: $(RESOURCE_GROUP)
+        targetPort: '3500'
+        ingress: 'external'
 
 ...
