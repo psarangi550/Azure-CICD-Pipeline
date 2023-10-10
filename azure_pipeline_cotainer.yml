@@ -23,21 +23,21 @@ variables:
 
 
 stages:
-# - stage: BuildApps
-#   displayName: Build the Container Apps
-#   pool:
-#     vmImage: 'ubuntu-latest'
-#   jobs:
-#   - job: Build_Docker_App
-#     displayName: Build the Docker Image
-#     steps:
-#     - task: Docker@2
-#       inputs:
-#         repository: $(IMAGE_NAME)
-#         command: 'buildAndPush'
-#         Dockerfile: './backend_api_python/Dockerfile'
-#         containerRegistry: 'Docker_Registry_connection'
-#         tags: '$(TAG)'
+- stage: BuildApps
+  displayName: Build the Container Apps
+  pool:
+    vmImage: 'ubuntu-latest'
+  jobs:
+  - job: Build_Docker_App
+    displayName: Build the Docker Image
+    steps:
+    - task: Docker@2
+      inputs:
+        repository: $(IMAGE_NAME)
+        command: 'buildAndPush'
+        Dockerfile: './backend_api_python/Dockerfile'
+        containerRegistry: 'Docker_Registry_connection'
+        tags: '$(TAG)'
 
 
 - stage: DeployApp
