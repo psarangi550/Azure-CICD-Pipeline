@@ -18,4 +18,3 @@ stages:
       - script: echo $(myvar) # echos A or B depending on which leg is running
 
 
-

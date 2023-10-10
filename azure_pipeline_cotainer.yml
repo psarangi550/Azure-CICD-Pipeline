@@ -1,0 +1,55 @@
+---
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - azure_pipeline_cotainer.yml
+      - backend_api_python
+    exclude:
+      - azure_pipeline_practise.yml
+      - azure-pipeline-test.yml
+      - azure-pipelines.yaml
+
+
+variables:
+  IMAGE_NAME: psarangi58/custom-nginx
+  CONTAINERAPPS_APP: custom-nginx  # ContainerApp Name that we have in the Azure Container App
+  CONTAINERAPPS_ENVIRONMENT: aca-environment #containerAppEnvName inside the Azure Container Apps or (AZA)
+  RESOURCE_GROUP: rg-containerapps-azure-pipelines
+  TAG: '$(Build.BuildId)' # tag for the Image
+
+
+stages:
+- stage: BuildApps
+  displayName: Build the Container Apps
+  pool:
+    vmImage: 'ubuntu-latest'
+  jobs:
+  - job: Build_Docker_App
+    displayName: Build the Docker Image
+    steps:
+    - script: echo Hello
+      displayName: echoing the output here
+
+  - job: Deploy_Docker_App
+    displayName: Deploying the Docker Image
+    steps:
+    - script: echo "Hello World"
+      displayName: echo Hello World
+
+
+- stage: DeployApps
+  displayName: Deploy the Container Apps to ACA
+  pool:
+    vmImage: 'ubuntu-latest'
+  jobs:
+  - job: Deploy_to_ACA_Container
+    displayName: Deploy to the ACA Container Apps
+    steps:
+    - script: echo "Deploy App"
+      displayName: echoing the message
+
+...
