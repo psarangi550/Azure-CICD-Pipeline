@@ -15,7 +15,7 @@ trigger:
 
 
 variables:
-  IMAGE_NAME: psarangi58/api-fastapi
+  IMAGE_NAME: pratik186/api-fastapi
   CONTAINERAPPS_APP: custom-nginx  # ContainerApp Name that we have in the Azure Container App
   CONTAINERAPPS_ENVIRONMENT: aca-environment #containerAppEnvName inside the Azure Container Apps or (AZA)
   RESOURCE_GROUP: rg-containerapps-azure-pipelines
