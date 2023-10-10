@@ -4,6 +4,8 @@
 
 - here we need to `go to the Azure Cloud Shell` in order to `login to the Azure Cloud Shell` using the command as `az login`
 
+- there there are `Few Resource Group` and `conrainerApp` and `containerAppEnv` and `Log Analyst` we need to `create in here` 
+
 - then we need to create a `Resource Group` with the command as below 
 
     ```bash

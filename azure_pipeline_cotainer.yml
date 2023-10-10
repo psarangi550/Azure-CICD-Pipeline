@@ -38,4 +38,17 @@ stages:
         Dockerfile: './backend_api_python/Dockerfile'
         containerRegistry: 'Docker_Registry_connection'
         tags: '$(TAG)'
+
+
+- stage: DeployApp
+  displayName: Deploy the App to ACA Container
+  pool:
+    vmImage: 'ubuntu-latest'
+  jobs:
+  - job: Deploy_ACA_Container
+    displayName: Deploy to ACA container
+    steps:
+    - script: echo "Hello"
+      displayName: echoing hello
+
 ...
