@@ -15,11 +15,12 @@ trigger:
 
 
 variables:
-  IMAGE_NAME: psarangi58/custom-nginx
+  IMAGE_NAME: psarangi58/api-fastapi
   CONTAINERAPPS_APP: custom-nginx  # ContainerApp Name that we have in the Azure Container App
   CONTAINERAPPS_ENVIRONMENT: aca-environment #containerAppEnvName inside the Azure Container Apps or (AZA)
   RESOURCE_GROUP: rg-containerapps-azure-pipelines
   TAG: '$(Build.BuildId)' # tag for the Image
+
 
 
 stages:
@@ -31,14 +32,23 @@ stages:
   - job: Build_Docker_App
     displayName: Build the Docker Image
     steps:
-    - script: echo Hello
-      displayName: echoing the output here
+    - task: Docker@2
+      inputs:
+        repository: '$(IMAGE_NAME)'
+        command: 'build'
+        Dockerfile: './backend_api_python/Dockerfile'
+        tags: '$(TAG)'
+    
 
   - job: Deploy_Docker_App
     displayName: Deploying the Docker Image
     steps:
-    - script: echo "Hello World"
-      displayName: echo Hello World
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker_Registry_connection'
+        repository: '$(IMAGE_NAME):$(TAG)'
+        command: 'push'
+    
 
 
 - stage: DeployApps
