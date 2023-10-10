@@ -34,22 +34,19 @@ stages:
     steps:
     - task: Docker@2
       inputs:
-        repository: '$(IMAGE_NAME)'
+        repository: $(IMAGE_NAME)
         command: 'build'
         Dockerfile: './backend_api_python/Dockerfile'
     
-    - script: docker images
-      displayName: display the docker image Name
-    
 
-  # - job: Deploy_Docker_App
-  #   displayName: Deploying the Docker Image
-  #   steps:
-  #   - task: Docker@2
-  #     inputs:
-  #       containerRegistry: 'Docker_Registry_connection'
-  #       repository: '$(IMAGE_NAME)'
-  #       command: 'push'
+  - job: Deploy_Docker_App
+    displayName: Deploying the Docker Image
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker_Registry_connection'
+        repository: $(IMAGE_NAME)
+        command: 'push'
     
 
 
