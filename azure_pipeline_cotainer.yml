@@ -23,39 +23,39 @@ variables:
 
 
 stages:
-- stage: BuildApps
-  displayName: Build the Container Apps
-  pool:
-    vmImage: 'ubuntu-latest'
-  jobs:
-  - job: Build_Docker_App
-    displayName: Build the Docker Image
-    steps:
-    - task: Docker@2
-      inputs:
-        repository: $(IMAGE_NAME)
-        command: 'buildAndPush'
-        Dockerfile: './backend_api_python/Dockerfile'
-        containerRegistry: 'Docker_Registry_connection'
-        tags: '$(TAG)'
-
-
-# - stage: DeployApp
-#   displayName: Deploy the App to ACA Container
-  
+# - stage: BuildApps
+#   displayName: Build the Container Apps
 #   pool:
 #     vmImage: 'ubuntu-latest'
-  
 #   jobs:
-#   - job: Deploy_ACA_Container
-#     displayName: Deploy to ACA container
+#   - job: Build_Docker_App
+#     displayName: Build the Docker Image
 #     steps:
-#     - task: AzureContainerApps@1
+#     - task: Docker@2
 #       inputs:
-#         azureSubscription: 'azure-connection'
-#         imageToDeploy: '$(IMAGE_NAME):$(TAG)'
-#         containerAppName: $(CONTAINERAPPS_APP)
-#         containerAppEnvironment: $(CONTAINERAPPS_ENVIRONMENT)
-#         resourceGroup: $(RESOURCE_GROUP)
+#         repository: $(IMAGE_NAME)
+#         command: 'buildAndPush'
+#         Dockerfile: './backend_api_python/Dockerfile'
+#         containerRegistry: 'Docker_Registry_connection'
+#         tags: '$(TAG)'
+
+
+- stage: DeployApp
+  displayName: Deploy the App to ACA Container
+  
+  pool:
+    vmImage: 'ubuntu-latest'
+  
+  jobs:
+  - job: Deploy_ACA_Container
+    displayName: Deploy to ACA container
+    steps:
+    - task: AzureContainerApps@1
+      inputs:
+        azureSubscription: 'azure-connection'
+        imageToDeploy: '$(IMAGE_NAME):$(TAG)'
+        containerAppName: $(CONTAINERAPPS_APP)
+        containerAppEnvironment: $(CONTAINERAPPS_ENVIRONMENT)
+        resourceGroup: $(RESOURCE_GROUP)
 
 ...
