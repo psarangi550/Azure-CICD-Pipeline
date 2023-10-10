@@ -16,7 +16,7 @@ trigger:
 
 variables:
   IMAGE_NAME: pratik186/api-fastapi
-  CONTAINERAPPS_APP: custom-nginx  # ContainerApp Name that we have in the Azure Container App
+  CONTAINERAPPS_APP: album-backend-api  # ContainerApp Name that we have in the Azure Container App
   CONTAINERAPPS_ENVIRONMENT: aca-environment #containerAppEnvName inside the Azure Container Apps or (AZA)
   RESOURCE_GROUP: rg-containerapps-azure-pipelines
   TAG: '$(Build.BuildId)' 
@@ -42,13 +42,20 @@ stages:
 
 - stage: DeployApp
   displayName: Deploy the App to ACA Container
+  
   pool:
     vmImage: 'ubuntu-latest'
+  
   jobs:
   - job: Deploy_ACA_Container
     displayName: Deploy to ACA container
     steps:
-    - script: echo "Hello"
-      displayName: echoing hello
+    - task: AzureContainerApps@1
+      inputs:
+        azureSubscription: 'azure-connection'
+        imageToDeploy: '$(IMAGE_NAME):$(TAG)'
+        containerAppName: $(CONTAINERAPPS_APP)
+        containerAppEnvironment: $(CONTAINERAPPS_ENVIRONMENT)
+        resourceGroup: $(RESOURCE_GROUP)
 
 ...
