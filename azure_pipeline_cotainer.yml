@@ -19,8 +19,7 @@ variables:
   CONTAINERAPPS_APP: custom-nginx  # ContainerApp Name that we have in the Azure Container App
   CONTAINERAPPS_ENVIRONMENT: aca-environment #containerAppEnvName inside the Azure Container Apps or (AZA)
   RESOURCE_GROUP: rg-containerapps-azure-pipelines
-
-
+  TAG: '$(Build.BuildId)' 
 
 
 stages:
@@ -39,6 +38,4 @@ stages:
         Dockerfile: './backend_api_python/Dockerfile'
         containerRegistry: 'Docker_Registry_connection'
         tags: '$(TAG)'
-
-
 ...
