@@ -14,6 +14,7 @@
         $LOCATION="westeurope"
         $CONTAINERAPPS_ENVIRONMENT="<any str>"
         $CONTAINERAPPS_APP="<any str>"
+        # step-1:- creating the resource group using the Azude CLI on Azure cloudshell
         az group create --location $LOCATION --resource-group $RESOURCE_GROUP
         # creating the Azure Resource Group in here
         # then we need to register for subscription as below 
@@ -43,6 +44,11 @@
     
     ```
 
+- we will have to `crete the service connection` from the `Azure Subscription` to the `Docker HuB registry`  as below 
+  
+  - go to the `project settings` &rarr; `service-connection` &rarr; `Docker Registry` &rarr; `Here we can provide the info about the docker Hub Registry by selecting it`
+
+- here we can `also Build and create the New Container Apps` using the `Azure Container registry` and `pushing to it`
 
 - we also have to create `Azure resource manager` which will connect the `azure subscription` to the `Azure container apps`
 
@@ -50,7 +56,7 @@
 
 - we can also create the `Service Principal (manual)/Managed Identity` for `Real Time Product Development` 
 
-- we can also create the `Service Principal`  from the `AAzure cloud Shell` as below 
+- we can also create the `Service Principal`  from the `Azure cloud Shell` as below 
 
     ```bash
         
@@ -69,7 +75,81 @@
     ```
 
 
-- then we need to `select the option` as ``  
+- then we can define the `aazure-pipelines.yml` as below 
+
+    ```yaml
+        ---
+
+        trigger:
+        branches:
+            include:
+            - main
+        paths:
+            include:
+            - azure_pipeline_cotainer.yml
+            - backend_api_python
+            exclude:
+            - azure_pipeline_practise.yml
+            - azure-pipeline-test.yml
+            - azure-pipelines.yaml
+
+
+        variables:
+        IMAGE_NAME: pratik186/api-fastapi
+        CONTAINERAPPS_APP: album-backend-api  # ContainerApp Name that we have in the Azure Container App
+        CONTAINERAPPS_ENVIRONMENT: aca-environment #containerAppEnvName inside the Azure Container Apps or (AZA)
+        RESOURCE_GROUP: rg-containerapps-azure-pipelines
+        TAG: '$(Build.BuildId)' 
+
+
+        stages:
+        - stage: BuildApps
+        displayName: Build the Container Apps
+        pool:
+            vmImage: 'ubuntu-latest'
+        jobs:
+        - job: Build_Docker_App
+            displayName: Build the Docker Image
+            steps:
+            - task: Docker@2
+            inputs:
+                repository: $(IMAGE_NAME)
+                command: 'buildAndPush'
+                Dockerfile: './backend_api_python/Dockerfile'
+                containerRegistry: 'Docker_Registry_connection'
+                tags: '$(TAG)'
+
+
+        - stage: DeployApp
+        displayName: Deploy the App to ACA Container
+        
+        pool:
+            vmImage: 'ubuntu-latest'
+        
+        jobs:
+        - job: Deploy_ACA_Container
+            displayName: Deploy to ACA container
+            steps:
+            - task: AzureContainerApps@1
+            inputs:
+                azureSubscription: 'Pay-As-You-Go(f6e00de2-b6f0-457c-99a0-f65ef9f60f18)'
+                imageToDeploy: '$(IMAGE_NAME):$(TAG)'
+                containerAppName: $(CONTAINERAPPS_APP)
+                containerAppEnvironment: $(CONTAINERAPPS_ENVIRONMENT)
+                resourceGroup: $(RESOURCE_GROUP)
+                targetPort: '3500'
+                ingress: 'external'
+        ...
+    
+    ```
+
+- here from the `DockerFile` we are `exposing the port 3500` hence the `hence the target is of 3500`
+
+- But we can also define the `we want the public access hence we can define the ingress=external`
+
+- we can then go to the `Azure Portal Resource Group` &rarr; `azure continer App`  and `in nthe container section we can see the container running`
+
+- we can also see the `ApplicationUrl` where we can see the `webapp` that we have deployed those images in here  
 
 - **Observations**
 
@@ -99,3 +179,16 @@
                     - Readme.md # which file we want to ignore
     
     ```
+
+- for defining the `repository` we can define in the global group as below 
+
+    ```yaml
+
+        # by using this we can refere the file and directory
+        resource:
+            repo: self
+        # here in azure DevOp Pipelines the Env Variable as $(Build.SourcesDirectory)
+    
+    ```
+
+- 
