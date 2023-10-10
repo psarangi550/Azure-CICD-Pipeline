@@ -35,30 +35,10 @@ stages:
     - task: Docker@2
       inputs:
         repository: $(IMAGE_NAME)
-        command: 'build'
+        command: 'buildAndPush'
         Dockerfile: './backend_api_python/Dockerfile'
-    
-
-  - job: Deploy_Docker_App
-    displayName: Deploying the Docker Image
-    steps:
-    - task: Docker@2
-      inputs:
         containerRegistry: 'Docker_Registry_connection'
-        repository: $(IMAGE_NAME)
-        command: 'push'
-    
+        tags: '$(TAG)'
 
-
-- stage: DeployApps
-  displayName: Deploy the Container Apps to ACA
-  pool:
-    vmImage: 'ubuntu-latest'
-  jobs:
-  - job: Deploy_to_ACA_Container
-    displayName: Deploy to the ACA Container Apps
-    steps:
-    - script: echo "Deploy App"
-      displayName: echoing the message
 
 ...
