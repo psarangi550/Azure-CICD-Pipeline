@@ -52,12 +52,11 @@ stages:
     steps:
     - task: AzureContainerApps@1
       inputs:
-        azureSubscription: 'azure-connection'
+        azureSubscription: 'Pay-As-You-Go(f6e00de2-b6f0-457c-99a0-f65ef9f60f18)'
         imageToDeploy: '$(IMAGE_NAME):$(TAG)'
         containerAppName: $(CONTAINERAPPS_APP)
         containerAppEnvironment: $(CONTAINERAPPS_ENVIRONMENT)
         resourceGroup: $(RESOURCE_GROUP)
         targetPort: '3500'
         ingress: 'external'
-
 ...
