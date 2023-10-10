@@ -40,22 +40,22 @@ stages:
         tags: '$(TAG)'
 
 
-- stage: DeployApp
-  displayName: Deploy the App to ACA Container
+# - stage: DeployApp
+#   displayName: Deploy the App to ACA Container
   
-  pool:
-    vmImage: 'ubuntu-latest'
+#   pool:
+#     vmImage: 'ubuntu-latest'
   
-  jobs:
-  - job: Deploy_ACA_Container
-    displayName: Deploy to ACA container
-    steps:
-    - task: AzureContainerApps@1
-      inputs:
-        azureSubscription: 'azure-connection'
-        imageToDeploy: '$(IMAGE_NAME):$(TAG)'
-        containerAppName: $(CONTAINERAPPS_APP)
-        containerAppEnvironment: $(CONTAINERAPPS_ENVIRONMENT)
-        resourceGroup: $(RESOURCE_GROUP)
+#   jobs:
+#   - job: Deploy_ACA_Container
+#     displayName: Deploy to ACA container
+#     steps:
+#     - task: AzureContainerApps@1
+#       inputs:
+#         azureSubscription: 'azure-connection'
+#         imageToDeploy: '$(IMAGE_NAME):$(TAG)'
+#         containerAppName: $(CONTAINERAPPS_APP)
+#         containerAppEnvironment: $(CONTAINERAPPS_ENVIRONMENT)
+#         resourceGroup: $(RESOURCE_GROUP)
 
 ...
